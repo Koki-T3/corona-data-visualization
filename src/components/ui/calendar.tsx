@@ -21,31 +21,44 @@ function Calendar({
 
   // const numOfConsultations = data[0]
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 月が変わるたびにapi requestをして１ヶ月分だけのデータを取得し、そのdataをDayContentに渡す
-        const response = await fetch(
-          "https://api.data.metro.tokyo.lg.jp/v1/Covid19CallCenter?from=2020-01-01&till=2020-01-31"
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        console.log(data[0]);
-        // console.log(data);
-        setData(data[0]);
-        setMounted(true);
-        // console.log(data[0][0]["相談件数"]);
-        // setLoading(false);
-      } catch (error) {
-        console.log(error);
-        // setError(error);
-        // setLoading(false);
+  const fetchData = async (from, till) => {
+    try {
+      // 月が変わるたびにapi requestをして１ヶ月分だけのデータを取得し、そのdataをDayContentに渡す
+      const response = await fetch(
+        `https://api.data.metro.tokyo.lg.jp/v1/Covid19CallCenter?from=${from}&till=${till}&limit=1000`
+      );
+
+      // const response = await fetch(
+      //   "https://api.data.metro.tokyo.lg.jp/v1/Covid19CallCenter?from=2020-01-01&till=2020-12-31&limit=1000"
+      // );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
+      const data = await response.json();
+      setData(data[0]);
+      setMounted(true);
+      return data[0];
+      // console.log(data[0][0]["相談件数"]);
+      // setLoading(false);
+    } catch (error) {
+      console.log(error);
+      // setError(error);
+      // setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    const fetchAllData = async () => {
+      const data2020 = await fetchData("2020-01-01", "2020-12-31");
+      const data2021 = await fetchData("2021-01-01", "2021-12-31");
+      const data2022 = await fetchData("2022-01-01", "2022-12-31");
+      const allData = [...data2020, ...data2021, ...data2022];
+
+      setData(allData);
     };
 
-    fetchData();
+    fetchAllData();
   }, []);
 
   return (

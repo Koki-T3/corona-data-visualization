@@ -34,7 +34,6 @@ const CustomDayContent = (props: DayContentProps) => {
       targetMonth === dataMonth &&
       targetDate === dataDay
     ) {
-      console.log(data["相談件数"]);
       numOfConsultations = data["相談件数"];
     }
   });
