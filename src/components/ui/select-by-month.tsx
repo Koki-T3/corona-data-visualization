@@ -9,7 +9,7 @@ import {
 } from "../ui/select";
 
 interface SelectByMonthProps {
-  selectedMonth: string;
+  selectedMonth: string | undefined;
   onSelectMonth: (selectedMonth: string) => void;
 }
 

@@ -5,19 +5,28 @@ import { RawDataItem } from "./components/ui/calendar";
 import { useEffect, useState } from "react";
 import { SelectByYear } from "./components/ui/select-by-year";
 import SelectByMonth from "./components/ui/select-by-month";
+import SelectByGroup from "./components/ui/select-by-group";
 
 interface ProcessedDataProps {
   x: string;
   y: number;
 }
 
+const weekdayNames = [
+  "日曜日",
+  "月曜日",
+  "火曜日",
+  "水曜日",
+  "木曜日",
+  "金曜日",
+  "土曜日",
+];
+
 function App() {
   const [data, setData] = useState<ProcessedDataProps[]>([]);
-  const [groupBy, setGroupBy] = useState("month");
-  const [from, setFrom] = useState("2020-01-01");
-  const [till, setTill] = useState("2020-12-31");
+  const [groupBy, setGroupBy] = useState("day");
   const [year, setYear] = useState("2020");
-  const [month, setMonth] = useState<string | null>(null);
+  const [month, setMonth] = useState<string | undefined>(undefined);
 
   const fetchData = async (from: string, till: string) => {
     try {
@@ -60,11 +69,8 @@ function App() {
 
   const fetchMonthData = async (year: string, month: string) => {
     const from = `${year}-${month.padStart(2, "0")}-01`;
-    const till = `${year}-${month.padStart(2, "0")}-${new Date(
-      parseInt(year),
-      parseInt(month),
-      0
-    ).getDate()}`;
+    const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
+    const till = `${year}-${month.padStart(2, "0")}-${lastDay}`;
     const fetchedData = await fetchData(from, till);
     return fetchedData;
   };
@@ -90,7 +96,7 @@ function App() {
           key = date.getDate().toString();
           break;
         case "weekday":
-          key = date.getDay().toString();
+          key = weekdayNames[date.getDay()];
           break;
         default:
           key = date.toISOString();
@@ -121,18 +127,22 @@ function App() {
 
   useEffect(() => {
     if (nums) {
-      const processedData = processData(nums, month ? "day" : groupBy);
+      const processedData = processData(nums, month ? groupBy : "month");
       setData(processedData);
     }
   }, [nums, groupBy, month]);
 
   const handleSelectYear = (selectedYear: string) => {
     setYear(selectedYear);
-    setMonth(null);
+    setMonth(undefined);
   };
 
   const handleSelectMonth = (selectedMonth: string) => {
     setMonth(selectedMonth);
+  };
+
+  const handleSelectGroup = (selectedGroup: string) => {
+    setGroupBy(selectedGroup);
   };
 
   if (!data) {
@@ -156,6 +166,12 @@ function App() {
           <SelectByMonth
             selectedMonth={month}
             onSelectMonth={handleSelectMonth}
+          />
+        )}
+        {month && (
+          <SelectByGroup
+            selectedGroup={groupBy}
+            onSelectGroup={handleSelectGroup}
           />
         )}
       </div>
