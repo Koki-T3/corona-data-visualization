@@ -1,4 +1,3 @@
-import React from "react";
 import CalendarSection from "./components/calendar-section";
 
 function App() {
