@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Select,
   SelectTrigger,
@@ -13,23 +12,23 @@ interface SelectByGroupProps {
   onSelectGroup: (selectedGroup: string) => void;
 }
 
-const SelectByGroup = ({
+export const SelectByGroup = ({
   selectedGroup,
   onSelectGroup,
 }: SelectByGroupProps) => {
   return (
     <Select value={selectedGroup} onValueChange={onSelectGroup}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue>{selectedGroup}</SelectValue>
+        <SelectValue>
+          {selectedGroup === "day" ? "日にち毎" : "曜日毎"}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
-          <SelectItem value="day">Day</SelectItem>
-          <SelectItem value="weekday">Weekday</SelectItem>
+          <SelectItem value="day">日にち毎</SelectItem>
+          <SelectItem value="weekday">曜日毎</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
   );
 };
-
-export default SelectByGroup;

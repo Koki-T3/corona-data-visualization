@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Select,
   SelectTrigger,
@@ -13,14 +12,16 @@ interface SelectByMonthProps {
   onSelectMonth: (selectedMonth: string) => void;
 }
 
-const SelectByMonth = ({
+export const SelectByMonth = ({
   selectedMonth,
   onSelectMonth,
 }: SelectByMonthProps) => {
   return (
     <Select value={selectedMonth} onValueChange={onSelectMonth}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue>{selectedMonth}</SelectValue>
+        <SelectValue>
+          {selectedMonth ? `${selectedMonth}月` : "月を選択"}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
@@ -34,5 +35,3 @@ const SelectByMonth = ({
     </Select>
   );
 };
-
-export default SelectByMonth;
