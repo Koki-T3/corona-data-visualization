@@ -27,8 +27,6 @@ const CustomDayContent = (props: DayContentProps) => {
       numOfConsultations = data["相談件数"];
     }
   });
-
-  // If the date is the same as 受付_年月日, pass the date, otherwise null
   return (
     <span style={{ position: "relative", overflow: "visible" }}>
       {targetDate}
@@ -37,8 +35,6 @@ const CustomDayContent = (props: DayContentProps) => {
       ) : (
         <div className="text-gray-400/80">0</div>
       )}
-      {/* {date}{" "}
-      <div className="text-gray-400/80">{props.data[date - 1]["相談件数"]}</div> */}
     </span>
   );
 };
