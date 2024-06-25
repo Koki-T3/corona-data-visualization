@@ -6,21 +6,12 @@ import { RawDataItem } from "./ui/calendar";
 import { SelectByMonth } from "./ui/select-by-month";
 import { SelectByGroup } from "./ui/select-by-group";
 import { SelectByYear } from "./ui/select-by-year";
+import { weekdayNames } from "../lib/weekdays";
 
 interface ProcessedDataProps {
   x: string;
   y: number;
 }
-
-const weekdayNames = [
-  "日曜日",
-  "月曜日",
-  "火曜日",
-  "水曜日",
-  "木曜日",
-  "金曜日",
-  "土曜日",
-];
 
 const LineChartSection = () => {
   const [data, setData] = useState<ProcessedDataProps[]>([]);
