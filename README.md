@@ -3,7 +3,9 @@
 
 ## Getting Started
 パッケージをインストール
+
 npm i
 
 サーバーの立ち上げ
+
 npm run dev
