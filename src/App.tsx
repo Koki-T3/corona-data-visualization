@@ -16,17 +16,17 @@ const Navigation = () => {
       <ul className="flex container gap-x-5 py-3">
         <li>
           <Button variant="link" onClick={() => handleClick("/")}>
-            課題1
+            Calendar
           </Button>
         </li>
         <li>
           <Button variant="link" onClick={() => handleClick("/task2")}>
-            課題2
+            Line graph
           </Button>
         </li>
         <li>
           <Button variant="link" onClick={() => handleClick("/task3")}>
-            課題3
+            Pie chart
           </Button>
         </li>
       </ul>

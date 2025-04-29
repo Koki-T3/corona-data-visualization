@@ -1,7 +1,7 @@
 import { ResponsiveLine } from "@nivo/line";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { RawDataItem } from "./ui/calendar";
 import { SelectByMonth } from "./ui/select-by-month";
 import { SelectByGroup } from "./ui/select-by-group";
@@ -31,28 +31,27 @@ const LineChartSection = () => {
       const data = await response.json();
       return data[0];
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const fetchYearData = async (year: string) => {
     const from = `${year}-01-01`;
     const till = `${year}-12-31`;
-    const fetchedData = await fetchData(from, till);
-    return fetchedData;
+    return await fetchData(from, till);
   };
 
   const fetchMonthData = async (year: string, month: string) => {
     const from = `${year}-${month.padStart(2, "0")}-01`;
     const lastDay = new Date(parseInt(year), parseInt(month), 0).getDate();
     const till = `${year}-${month.padStart(2, "0")}-${lastDay}`;
-    const fetchedData = await fetchData(from, till);
-    return fetchedData;
+    return await fetchData(from, till);
   };
 
   const { data: nums, isLoading } = useQuery({
     queryFn: () => (month ? fetchMonthData(year, month) : fetchYearData(year)),
     queryKey: month ? ["num", year, month] : ["num", year],
+    staleTime: 5 * 60 * 1000,
   });
 
   const processData = (
@@ -90,12 +89,14 @@ const LineChartSection = () => {
     }));
   };
 
-  useEffect(() => {
-    if (nums) {
-      const processedData = processData(nums, month ? groupBy : "month");
-      setData(processedData);
-    }
+  const processedData = useMemo(() => {
+    if (!nums) return [];
+    return processData(nums, month ? groupBy : "month");
   }, [nums, groupBy, month]);
+
+  useEffect(() => {
+    setData(processedData);
+  }, [processedData]);
 
   const handleSelectYear = (selectedYear: string) => {
     setYear(selectedYear);
@@ -149,7 +150,11 @@ const LineChartSection = () => {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
-              legend: "transportation",
+              legend: month
+                ? groupBy === "weekday"
+                  ? "Day of week"
+                  : "Date"
+                : "Month",
               legendOffset: 36,
               legendPosition: "middle",
               truncateTickAt: 0,
@@ -158,7 +163,7 @@ const LineChartSection = () => {
               tickSize: 5,
               tickPadding: 5,
               tickRotation: 0,
-              legend: "相談件数",
+              legend: "Number of consultations",
               legendOffset: -40,
               legendPosition: "middle",
               truncateTickAt: 0,
@@ -200,7 +205,9 @@ const LineChartSection = () => {
           />
         )}
         <div className="flex gap-x-3">
-          <SelectByYear selectedYear={year} onSelectYear={handleSelectYear} />
+          <div className="ml-3">
+            <SelectByYear selectedYear={year} onSelectYear={handleSelectYear} />
+          </div>
           {year && (
             <SelectByMonth
               selectedMonth={month ?? undefined}
